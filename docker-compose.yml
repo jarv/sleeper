@@ -1,0 +1,19 @@
+# To run:
+#   docker-compose up
+#   http://localhost:8700/
+
+version: '3.9'
+services:
+  sleeper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sleeper
+    ports:
+      - 8700:8700
+  caddy:
+    image: caddy
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    ports:
+      - 8100:80
