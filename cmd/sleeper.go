@@ -26,7 +26,7 @@ func (l *SleepHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			<-l.sem
 		}()
 
-		ms, waitVal, err := valueFromURL(r.URL.Path)
+		ms, waitVal, err := msFromURL(r.URL.Path)
 		if err != nil {
 			http.Error(w, "💤 invalid sleep value", http.StatusNotFound)
 			return
@@ -69,7 +69,7 @@ func (s *Sleeper) Run() {
 	log.Fatal(http.ListenAndServe(listenStr, sleepHandler))
 }
 
-func valueFromURL(path string) (int, string, error) {
+func msFromURL(path string) (int, string, error) {
 	if len(path) <= 1 {
 		return 0, "0s", nil
 	}
