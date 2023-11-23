@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"log/slog"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -13,6 +13,10 @@ import (
 const (
 	DefaultListenPort int = 8700
 	ConnLimit             = 300
+)
+
+var (
+	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
 )
 
 type SleepHandler struct {
@@ -66,7 +70,10 @@ func (s *Sleeper) Run() {
 	sleepHandler := &SleepHandler{
 		make(chan struct{}, ConnLimit),
 	}
-	log.Fatal(http.ListenAndServe(listenStr, sleepHandler))
+	if err := http.ListenAndServe(listenStr, sleepHandler); err != nil {
+		logger.Error("Unable to setup listener", "err", err)
+		os.Exit(1)
+	}
 }
 
 func msFromURL(path string) (int, string, error) {
