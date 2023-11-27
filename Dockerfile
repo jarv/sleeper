@@ -4,7 +4,7 @@ FROM golang:1.21 as sleeper-builder
 WORKDIR /app
 COPY . .
 RUN --mount=type=cache,target=/root/.cache/go-build \
-  CGO_ENABLED=0 go build -ldflags "-w" -o sleeper ./cmd/sleeper.go
+  CGO_ENABLED=0 go build -ldflags "-w" -o sleeper ./sleeper.go
 
 FROM scratch
 COPY --from=sleeper-builder /etc/passwd /etc/passwd

@@ -30,7 +30,7 @@ func (l *SleepHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			<-l.sem
 		}()
 
-		ms, waitVal, err := msFromURL(r.URL.Path)
+		ms, waitVal, err := sleepValFromURL(r.URL.Path)
 		if err != nil {
 			http.Error(w, "💤 invalid sleep value", http.StatusNotFound)
 			return
@@ -41,6 +41,7 @@ func (l *SleepHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		logger.Info("sleeping", "remoteAddr", r.RemoteAddr, "waitVal", waitVal, "ms", ms)
 		time.Sleep(time.Duration(ms) * time.Millisecond)
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "💤 for %s\n", waitVal)
@@ -66,7 +67,7 @@ func (s *Sleeper) Run() {
 		listenStr = fmt.Sprintf(":%d", s.listenPort)
 	}
 
-	slog.Info("Server started", "listenStr", listenStr)
+	logger.Info("Server started", "listenStr", listenStr)
 	sleepHandler := &SleepHandler{
 		make(chan struct{}, ConnLimit),
 	}
@@ -76,7 +77,7 @@ func (s *Sleeper) Run() {
 	}
 }
 
-func msFromURL(path string) (int, string, error) {
+func sleepValFromURL(path string) (int, string, error) {
 	if len(path) <= 1 {
 		return 0, "0s", nil
 	}
