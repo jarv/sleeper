@@ -12,7 +12,7 @@ import (
 
 const (
 	DefaultListenPort int = 8700
-	ConnLimit             = 300
+	ConnLimit             = 15
 )
 
 var (
