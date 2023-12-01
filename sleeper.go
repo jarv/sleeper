@@ -46,7 +46,8 @@ func (l *SleepHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "💤 for %s\n", waitVal)
 	default:
-		http.Error(w, "💤 too many requests", http.StatusTooManyRequests)
+		logger.Error("too many connections!", "remoteAddr", r.RemoteAddr)
+		http.Error(w, "💤 too many connections", http.StatusTooManyRequests)
 	}
 }
 
