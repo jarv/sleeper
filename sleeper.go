@@ -12,7 +12,7 @@ import (
 
 const (
 	DefaultListenPort int = 8700
-	ConnLimit             = 15
+	connLimit             = 15
 )
 
 var (
@@ -70,7 +70,7 @@ func (s *Sleeper) Run() {
 
 	logger.Info("Server started", "listenStr", listenStr)
 	sleepHandler := &SleepHandler{
-		make(chan struct{}, ConnLimit),
+		make(chan struct{}, connLimit),
 	}
 	if err := http.ListenAndServe(listenStr, sleepHandler); err != nil {
 		logger.Error("Unable to setup listener", "err", err)
